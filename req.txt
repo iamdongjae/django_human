@@ -1,0 +1,2 @@
+pip install mxnet gluonnlp pandas tqdm sentencepiece transformers torch numpy==1.23.1 openpyxl
+pip install 'git+https://github.com/SKTBrain/KoBERT.git#egg=kobert_tokenizer&subdirectory=kobert_hf'
