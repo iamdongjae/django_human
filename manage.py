@@ -2,7 +2,7 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-
+from kobert.bert_module.bert_classifier import BERTClassifier
 
 def main():
     """Run administrative tasks."""

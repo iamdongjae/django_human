@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <p> hi index</p>
+    <form method = 'post'>
+      {% csrf_token %}
+      <textarea id="text" name="text"></textarea>
+      <button id="get_emotion" type="button">전송</button>
+      <text id="emotion" name="emotion"></text>
+    </form>
+  </body>
+
+<!-- 외부에서 j쿼리 라이브러리를 import할때 사용-->
+<script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+<script type="text/javascript">
+function getCookie(name) {
+    let cookieValue = null;
+    // 쿠키가 존재하면, 그리고 쿠키 값이 ''(공백)이 아니라면..
+    // 사실 쿠키에는 공백도 문자열이므로 문자열이 들어간다. 고로, 뒤에꺼만 있어도됨
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function get_emotion(text){
+    var csrf_token = getCookie('csrftoken');
+    var postdata = {
+        'text':text
+    };
+
+    // ajax - 제이쿼리로 부터 가져온 기능
+    // 서버와 비동기 통신을 위한 것
+    $.ajax({
+        type: 'POST',
+        url: '{% url "BERT:emotion" %}',
+        headers: {'X-CSRFTOKEN': csrf_token},        
+        data: JSON.stringify(postdata),
+        dataType : 'JSON',
+        contentType: 'application/json; charset=utf-8; X-Content-Type-Options=nosniff',
+        // 결과가 조회되면 ajxEmpList에 결과를 채워넣는다.
+        success: function(data){
+            $('#emotion').html(data.emotion);
+        },
+        // 에러이면 에러 메시지 출력
+        error: function(request, status, error){
+            alert('error:' + error);            
+        }
+    })
+}
+
+// $(document).ready() - 제이쿼리 라이브러리로부터 가져온 기능
+// DOM이 로드된 후, 동작을 정의하는 것
+$(document).ready(function() {
+    // 버튼 클릭(click)시 이벤트 처리를 위함 기능
+    $("#get_emotion").on("click", function() 
+    {
+        get_emotion($("#text").val());
+    });
+});
+
+</script>
+</html>
